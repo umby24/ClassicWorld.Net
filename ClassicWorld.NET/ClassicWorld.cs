@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Security.Cryptography;
 using fNbt;
 
-namespace ClassicWorld.NET
+namespace ClassicWorld_NET
 {
     public interface IMetadataStructure {
         NbtCompound Read(NbtCompound Metadata);
@@ -28,8 +29,10 @@ namespace ClassicWorld.NET
         public NbtCompound Write() {
             var newCompound = new NbtCompound("Metadata");
 
-            foreach (NbtTag b in Tags) {
-                newCompound.Add(b);
+            if (Tags != null) {
+                foreach (NbtTag b in Tags) {
+                    newCompound.Add(b);
+                }
             }
 
             return newCompound;
@@ -177,13 +180,42 @@ namespace ClassicWorld.NET
         public short SpawnX, SpawnY, SpawnZ;
         public byte SpawnRotation, SpawnLook;
         public byte[] BlockData;
-        public CPEMetadata CPEData;
         public ForeignMeta Foreignmeta;
         public Dictionary<string, IMetadataStructure> MetadataParsers;
 
         // -- Non-public variables
         NbtCompound Basetag;
 
+        /// <summary>
+        /// Creates a new ClassicWorld map.
+        /// </summary>
+        /// <param name="X"></param>
+        /// <param name="Y"></param>
+        /// <param name="Z"></param>
+        public ClassicWorld(short X, short Y, short Z) {
+            RandomNumberGenerator Random = RandomNumberGenerator.Create();
+
+            UUID = new byte[16]; // -- Generate a random UUID
+            Random.GetBytes(UUID);
+
+            BlockData = new byte[X * Y * Z]; // -- Creates a blank map.
+
+            FormatVersion = 1;
+            SizeX = X;
+            SizeY = Y;
+            SizeZ = Z;
+            TimeCreated = GetCurrentUnixTime();
+            LastAccessed = GetCurrentUnixTime();
+            LastModified = GetCurrentUnixTime();
+
+            MetadataParsers = new Dictionary<string, IMetadataStructure>();
+            MetadataParsers.Add("CPE", new CPEMetadata());
+        }
+
+        /// <summary>
+        /// Loads an already existing ClassicWorld map
+        /// </summary>
+        /// <param name="Filename">The path to the map file.</param>
         public ClassicWorld(string Filename) {
             var myFile = new NbtFile(Filename);
             Basetag = myFile.RootTag;
@@ -192,8 +224,7 @@ namespace ClassicWorld.NET
                 throw new FormatException("Not a valid Classicworld file. Basetag name is not 'ClassicWorld'.");
 
             MetadataParsers = new Dictionary<string, IMetadataStructure>();
-            CPEData = new CPEMetadata();
-            MetadataParsers.Add("CPE", CPEData);
+            MetadataParsers.Add("CPE", new CPEMetadata());
         }
 
         /// <summary>
@@ -254,12 +285,14 @@ namespace ClassicWorld.NET
 
             var Metadata = Basetag.Get<NbtCompound>("Metadata");
 
-            // -- Let user-defined metadata parsers parse metadata...
-            foreach (IMetadataStructure Meta in MetadataParsers.Values)
-                Metadata = Meta.Read(Metadata);
+            if (Metadata != null) {
+                // -- Let user-defined metadata parsers parse metadata...
+                foreach (IMetadataStructure Meta in MetadataParsers.Values)
+                    Metadata = Meta.Read(Metadata);
 
-            // -- Store all foreign metadata
-            Metadata = Foreignmeta.Read(Metadata);
+                // -- Store all foreign metadata
+                Metadata = Foreignmeta.Read(Metadata);
+            }
 
             // -- Now that the map is loaded, we have to ensure all of the required values were included.
 
@@ -273,7 +306,7 @@ namespace ClassicWorld.NET
                 throw new FormatException("Map header information not found.");
 
             if (LastAccessed != 0)
-                LastAccessed = DateTime.Now.ToFileTime();
+                LastAccessed = GetCurrentUnixTime();
         }
 
         /// <summary>
@@ -291,7 +324,7 @@ namespace ClassicWorld.NET
 
             var compound = new NbtCompound("ClassicWorld") {
                 new NbtByte("FormatVersion", 1),
-                new NbtString("MapName", MapName),
+                new NbtString("Name", MapName),
                 new NbtByteArray("UUID", UUID),
                 new NbtShort("X", SizeX),
                 new NbtShort("Y", SizeY),
@@ -300,8 +333,8 @@ namespace ClassicWorld.NET
                     new NbtShort("X", SpawnX),
                     new NbtShort("Y", SpawnY),
                     new NbtShort("Z", SpawnZ),
-                    new NbtShort("H", SpawnRotation),
-                    new NbtShort("P", SpawnLook)
+                    new NbtByte("H", SpawnRotation),
+                    new NbtByte("P", SpawnLook)
                 },
                 new NbtByteArray("BlockArray", BlockData),
                 NbtMetadata
@@ -336,6 +369,11 @@ namespace ClassicWorld.NET
 
             var myFile = new NbtFile(compound);
             myFile.SaveToFile(Filename, NbtCompression.GZip);
+        }
+
+        private long GetCurrentUnixTime() {
+            TimeSpan span = (DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0).ToLocalTime());
+            return (long)span.TotalSeconds;
         }
     }
 }
