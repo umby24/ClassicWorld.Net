@@ -15,7 +15,7 @@ Features
 
 Examples
 --------
-Loading a map
+**Loading a map**
 
     var CWMap = new ClassicWorld(Filename);
 	CWMap.Load();
@@ -23,7 +23,7 @@ Loading a map
 That's it! Now you can access each of the public members of the map, including the block data.
 
 
-Saving a map
+**Saving a map**
 
 	var CWMap = new ClassicWorld(Filename);
 	CWMap.Load();
@@ -32,7 +32,7 @@ Saving a map
 That's it! The map will be saved in the current working directory as "MyWorld.cw", gzip compressed.
 Any metadata that the library did not reconize will be there as well.
 
-Adding a custom Metadata Handler, Loading a map, changing some properties, then saving it.
+**Adding a custom Metadata Handler, Loading a map, changing some properties, then saving it.**
 
 	var CWMap = new ClassicWorld(Filename);
 	CWMap.MetadataParsers.Add("MyCustom", MyCustomParser);
