@@ -371,9 +371,12 @@ namespace ClassicWorld_NET
             myFile.SaveToFile(Filename, NbtCompression.GZip);
         }
 
+        private static readonly DateTime UnixEpoch =
+            new DateTime( 1970, 1, 1, 0, 0, 0, DateTimeKind.Utc );
+            
         private long GetCurrentUnixTime() {
-            TimeSpan span = (DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0).ToLocalTime());
-            return (long)span.TotalSeconds;
+            TimeSpan timeSinceEpoch = (DateTime.UtcNow - UnixEpoch);
+            return (long)timeSinceEpoch.TotalSeconds;
         }
     }
 }
