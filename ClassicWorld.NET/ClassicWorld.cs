@@ -13,7 +13,7 @@ namespace ClassicWorld_NET
     }
 
     public struct ForeignMeta : IMetadataStructure {
-        public NbtTag[] Tags;
+        public NbtTag[] Tags { get; set; }
 
         public NbtCompound Read(NbtCompound Metadata) {
             Tags = new NbtTag[Metadata.Tags.Count()];
