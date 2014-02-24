@@ -251,14 +251,14 @@ namespace ClassicWorld_NET
             SizeY = Basetag["Y"].ShortValue;
             SizeZ = Basetag["Z"].ShortValue;
 
-            NbtCompound CreatedBy = Basetag.Get<NbtCompound>("CreatedBy");
+            var CreatedBy = Basetag.Get<NbtCompound>("CreatedBy");
 
             if (CreatedBy != null) {
                 CreatingService = CreatedBy["Service"].StringValue;
                 CreatingUsername = CreatedBy["Username"].StringValue;
             }
 
-            NbtCompound Mapgen = Basetag.Get<NbtCompound>("MapGenerator");
+            var Mapgen = Basetag.Get<NbtCompound>("MapGenerator");
 
             if (Mapgen != null) {
                 GeneratingSoftware = Mapgen["Software"].StringValue;
@@ -274,7 +274,7 @@ namespace ClassicWorld_NET
             if (Basetag["LastModified"] != null)
                 LastModified = Basetag["LastModified"].LongValue;
 
-            NbtCompound Spawnpoint = Basetag.Get<NbtCompound>("Spawn");
+            var Spawnpoint = Basetag.Get<NbtCompound>("Spawn");
 
             if (Spawnpoint == null)
                 throw new FormatException("Spawn not found.");
@@ -312,6 +312,8 @@ namespace ClassicWorld_NET
 
             if (LastAccessed != 0)
                 LastAccessed = GetCurrentUnixTime();
+
+            Basetag = null;
         }
 
         /// <summary>
@@ -374,6 +376,9 @@ namespace ClassicWorld_NET
 
             var myFile = new NbtFile(compound);
             myFile.SaveToFile(Filename, NbtCompression.GZip);
+
+            compound = null;
+            myFile = null;
         }
 
         private static readonly DateTime UnixEpoch =
