@@ -65,14 +65,12 @@ namespace ClassicWorld_NET
                 if (CPEData["ClickDistance"] != null) {
                     ClickDistanceVersion = CPEData["ClickDistance"]["ExtensionVersion"].IntValue;
                     ClickDistance = CPEData["ClickDistance"]["Distance"].ShortValue;
-                    CPEData.Remove(CPEData["ClickDistance"]);
                 }
 
                 if (CPEData["CustomBlocks"] != null) {
                     CustomBlocksVersion = CPEData["CustomBlocks"]["ExtensionVersion"].IntValue;
                     CustomBlocksLevel = CPEData["CustomBlocks"]["SupportLevel"].ShortValue;
                     CustomBlocksFallback = CPEData["CustomBlocks"]["Fallback"].ByteArrayValue;
-                    CPEData.Remove(CPEData["CustomBlocks"]);
                 }
 
                 if (CPEData["EnvColors"] != null) {
@@ -82,7 +80,6 @@ namespace ClassicWorld_NET
                     FogColor = new short[] { CPEData["EnvColors"]["Fog"]["R"].ShortValue, CPEData["EnvColors"]["Fog"]["G"].ShortValue, CPEData["EnvColors"]["Fog"]["B"].ShortValue };
                     AmbientColor = new short[] { CPEData["EnvColors"]["Ambient"]["R"].ShortValue, CPEData["EnvColors"]["Ambient"]["G"].ShortValue, CPEData["EnvColors"]["Ambient"]["B"].ShortValue };
                     SunlightColor = new short[] { CPEData["EnvColors"]["Sunlight"]["R"].ShortValue, CPEData["EnvColors"]["Sunlight"]["R"].ShortValue, CPEData["EnvColors"]["Sunlight"]["R"].ShortValue };
-                    CPEData.Remove(CPEData["EnvColors"]);
                 }
 
                 if (CPEData["EnvMapAppearance"] != null) {
@@ -91,10 +88,9 @@ namespace ClassicWorld_NET
                     SideBlock = CPEData["EnvMapAppearance"]["SideBlock"].ByteValue;
                     EdgeBlock = CPEData["EnvMapAppearance"]["EdgeBlock"].ByteValue;
                     SideLevel = CPEData["EnvMapAppearance"]["SideLevel"].ShortValue;
-                    CPEData.Remove(CPEData["EnvMapAppearance"]);
-                }                
+                }
 
-                return CPEData;
+                Metadata.Remove(CPEData);
             }
 
             return Metadata;
