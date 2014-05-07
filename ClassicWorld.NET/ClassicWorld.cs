@@ -194,7 +194,7 @@ namespace ClassicWorld_NET
         /// <param name="Y"></param>
         /// <param name="Z"></param>
         public ClassicWorld(short X, short Y, short Z) {
-            RandomNumberGenerator Random = RandomNumberGenerator.Create();
+            var Random = RandomNumberGenerator.Create();
 
             UUID = new byte[16]; // -- Generate a random UUID
             Random.GetBytes(UUID);
@@ -232,6 +232,7 @@ namespace ClassicWorld_NET
         /// Loads the ClassicWorld map.
         /// </summary>
         public void Load() {
+            BlockData = null;
             FormatVersion = Basetag["FormatVersion"].ByteValue;
 
             if (FormatVersion != 1)
@@ -323,6 +324,8 @@ namespace ClassicWorld_NET
 
                 if (Nbt != null)
                     NbtMetadata.Add(Nbt);
+
+                Nbt = null;
             }
 
             var compound = new NbtCompound("ClassicWorld") {
@@ -375,6 +378,7 @@ namespace ClassicWorld_NET
 
             compound = null;
             myFile = null;
+            NbtMetadata = null;
         }
 
         private static readonly DateTime UnixEpoch =
