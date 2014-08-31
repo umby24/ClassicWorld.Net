@@ -189,9 +189,9 @@ namespace ClassicWorld.NET
         /// <summary>
         /// Creates a new ClassicWorld map.
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="z"></param>
+        /// <param name="x">X size of the map.</param>
+        /// <param name="y">Y size of the map.</param>
+        /// <param name="z">Z size of the map.</param>
         public ClassicWorld(short x, short y, short z) {
             var random = RandomNumberGenerator.Create();
 
@@ -312,6 +312,7 @@ namespace ClassicWorld.NET
         /// <summary>
         /// Saves the ClassicWorld map.
         /// </summary>
+        /// <param name="filename">The file name/path to save the map to.</param>
         public void Save(string filename) {
             var nbtMetadata = Foreignmeta.Write();
 
@@ -366,16 +367,12 @@ namespace ClassicWorld.NET
 
             var myFile = new NbtFile(compound);
             myFile.SaveToFile(filename, NbtCompression.GZip);
-
-            compound = null;
-            myFile = null;
-            nbtMetadata = null;
         }
 
         private static readonly DateTime UnixEpoch =
             new DateTime( 1970, 1, 1, 0, 0, 0, DateTimeKind.Utc );
             
-        private long GetCurrentUnixTime() {
+        private static long GetCurrentUnixTime() {
             var timeSinceEpoch = (DateTime.UtcNow - UnixEpoch);
             return (long)timeSinceEpoch.TotalSeconds;
         }
