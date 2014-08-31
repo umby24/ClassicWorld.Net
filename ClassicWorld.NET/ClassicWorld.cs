@@ -169,7 +169,7 @@ namespace ClassicWorld.NET
         }
     }
 
-    public class ClassicWorld {
+    public class Classicworld {
         public byte FormatVersion;
         public string MapName;
         public byte[] Uuid;
@@ -187,12 +187,12 @@ namespace ClassicWorld.NET
         NbtCompound _basetag;
 
         /// <summary>
-        /// Creates a new ClassicWorld map.
+        /// Creates a new Classicworld map.
         /// </summary>
         /// <param name="x">X size of the map.</param>
         /// <param name="y">Y size of the map.</param>
         /// <param name="z">Z size of the map.</param>
-        public ClassicWorld(short x, short y, short z) {
+        public Classicworld(short x, short y, short z) {
             var random = RandomNumberGenerator.Create();
 
             Uuid = new byte[16]; // -- Generate a random UUID
@@ -212,10 +212,10 @@ namespace ClassicWorld.NET
         }
 
         /// <summary>
-        /// Loads an already existing ClassicWorld map
+        /// Loads an already existing Classicworld map
         /// </summary>
         /// <param name="filename">The path to the map file.</param>
-        public ClassicWorld(string filename) {
+        public Classicworld(string filename) {
             var myFile = new NbtFile(filename);
             _basetag = myFile.RootTag;
 
@@ -226,7 +226,7 @@ namespace ClassicWorld.NET
         }
 
         /// <summary>
-        /// Loads the ClassicWorld map.
+        /// Loads the Classicworld map.
         /// </summary>
         public void Load() {
             BlockData = null;
@@ -310,7 +310,7 @@ namespace ClassicWorld.NET
         }
 
         /// <summary>
-        /// Saves the ClassicWorld map.
+        /// Saves the Classicworld map.
         /// </summary>
         /// <param name="filename">The file name/path to save the map to.</param>
         public void Save(string filename) {
