@@ -1,65 +1,59 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
-using ClassicWorld_NET;
+using ClassicWorld.NET;
 
 namespace ClassicWorldTest {
     public partial class Form1 : Form {
-        bool Loaded = false;
-        ClassicWorld Map;
+        bool _loaded;
+        private Classicworld _map;
 
         public Form1() {
             InitializeComponent();
         }
 
         private void btnLoad_Click(object sender, EventArgs e) {
-            var Result = openMap.ShowDialog();
+            var result = openMap.ShowDialog();
 
-            if (Result == DialogResult.OK) {
-                Stopwatch Timer = new Stopwatch();
-                Timer.Start();
+            if (result == DialogResult.OK) {
+                var timer = new Stopwatch();
+                timer.Start();
 
-                Map = new ClassicWorld(openMap.FileName);
-                Map.Load();
+                _map = new Classicworld(openMap.FileName);
+                _map.Load();
 
-                Timer.Stop();
-                lblTime.Text = "Time: " + Timer.Elapsed.TotalSeconds.ToString();
-                Loaded = true;
+                timer.Stop();
+                lblTime.Text = "Time: " + timer.Elapsed.TotalSeconds;
+                _loaded = true;
             }
         }
 
         private void btnSave_Click(object sender, EventArgs e) {
-            var Result = saveMap.ShowDialog();
+            var result = saveMap.ShowDialog();
 
-            if (Result == DialogResult.OK) { 
-                if (Loaded) {
-                    Stopwatch Timer = new Stopwatch();
-                    Timer.Start();
+            if (result != DialogResult.OK) 
+                return;
 
-                    Map.Save(saveMap.FileName);
+            if (_loaded) {
+                var timer = new Stopwatch();
+                timer.Start();
 
-                    Timer.Stop();
+                _map.Save(saveMap.FileName);
 
-                    lblTime.Text = "Time: " + Timer.Elapsed.TotalSeconds.ToString();
-                } else {
-                    // -- Create a map and save it.
-                    Stopwatch Timer = new Stopwatch();
-                    Timer.Start();
+                timer.Stop();
 
-                    Map = new ClassicWorld(128, 128, 128);
-                    Map.MapName = "New Map!";
-                    Map.Save(saveMap.FileName);
+                lblTime.Text = "Time: " + timer.Elapsed.TotalSeconds;
+            } else {
+                // -- Create a map and save it.
+                var timer = new Stopwatch();
+                timer.Start();
 
-                    Timer.Stop();
+                _map = new Classicworld(128, 128, 128) {MapName = "New Map!"};
+                _map.Save(saveMap.FileName);
 
-                    lblTime.Text = "Time: " + Timer.Elapsed.TotalSeconds.ToString();
-                }
+                timer.Stop();
+
+                lblTime.Text = "Time: " + timer.Elapsed.TotalSeconds;
             }
         }
     }

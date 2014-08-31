@@ -62,12 +62,12 @@
             // openMap
             // 
             this.openMap.DefaultExt = "cw";
-            this.openMap.Filter = "ClassicWorld Map|*.cw";
+            this.openMap.Filter = "Classicworld Map|*.cw";
             // 
             // saveMap
             // 
             this.saveMap.DefaultExt = "cw";
-            this.saveMap.Filter = "ClassicWorld Map|*.cw";
+            this.saveMap.Filter = "Classicworld Map|*.cw";
             // 
             // Form1
             // 
