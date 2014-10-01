@@ -27,10 +27,11 @@ namespace ClassicWorld.NET
         public NbtCompound Write() {
             var newCompound = new NbtCompound("Metadata");
 
-            if (Tags != null) {
-                foreach (var b in Tags) 
-                    newCompound.Add(b);
-            }
+            if (Tags == null) 
+                return newCompound;
+
+            foreach (var b in Tags) 
+                newCompound.Add(b);
 
             return newCompound;
         }
@@ -57,40 +58,46 @@ namespace ClassicWorld.NET
         public byte EdgeBlock;
         public short SideLevel;
 
+        public byte Weather;
+
         public NbtCompound Read(NbtCompound metadata) {
             var cpeData = metadata.Get<NbtCompound>("CPE");
 
-            if (cpeData != null) {
-                if (cpeData["ClickDistance"] != null) {
-                    ClickDistanceVersion = cpeData["ClickDistance"]["ExtensionVersion"].IntValue;
-                    ClickDistance = cpeData["ClickDistance"]["Distance"].ShortValue;
-                }
+            if (cpeData == null) 
+                return metadata;
 
-                if (cpeData["CustomBlocks"] != null) {
-                    CustomBlocksVersion = cpeData["CustomBlocks"]["ExtensionVersion"].IntValue;
-                    CustomBlocksLevel = cpeData["CustomBlocks"]["SupportLevel"].ShortValue;
-                    CustomBlocksFallback = cpeData["CustomBlocks"]["Fallback"].ByteArrayValue;
-                }
-
-                if (cpeData["EnvColors"] != null) {
-                    EnvColorsVersion = cpeData["EnvColors"]["ExtensionVersion"].IntValue;
-                    SkyColor = new[] { cpeData["EnvColors"]["Sky"]["R"].ShortValue, cpeData["EnvColors"]["Sky"]["G"].ShortValue, cpeData["EnvColors"]["Sky"]["B"].ShortValue };
-                    CloudColor = new[] { cpeData["EnvColors"]["Cloud"]["R"].ShortValue, cpeData["EnvColors"]["Cloud"]["G"].ShortValue, cpeData["EnvColors"]["Cloud"]["B"].ShortValue };
-                    FogColor = new[] { cpeData["EnvColors"]["Fog"]["R"].ShortValue, cpeData["EnvColors"]["Fog"]["G"].ShortValue, cpeData["EnvColors"]["Fog"]["B"].ShortValue };
-                    AmbientColor = new[] { cpeData["EnvColors"]["Ambient"]["R"].ShortValue, cpeData["EnvColors"]["Ambient"]["G"].ShortValue, cpeData["EnvColors"]["Ambient"]["B"].ShortValue };
-                    SunlightColor = new[] { cpeData["EnvColors"]["Sunlight"]["R"].ShortValue, cpeData["EnvColors"]["Sunlight"]["R"].ShortValue, cpeData["EnvColors"]["Sunlight"]["R"].ShortValue };
-                }
-
-                if (cpeData["EnvMapAppearance"] != null) {
-                    EnvMapAppearanceVersion = cpeData["EnvMapAppearance"]["ExtensionVersion"].IntValue;
-                    TextureUrl = cpeData["EnvMapAppearance"]["TextureURL"].StringValue;
-                    SideBlock = cpeData["EnvMapAppearance"]["SideBlock"].ByteValue;
-                    EdgeBlock = cpeData["EnvMapAppearance"]["EdgeBlock"].ByteValue;
-                    SideLevel = cpeData["EnvMapAppearance"]["SideLevel"].ShortValue;
-                }
-
-                metadata.Remove(cpeData);
+            if (cpeData["ClickDistance"] != null) {
+                ClickDistanceVersion = cpeData["ClickDistance"]["ExtensionVersion"].IntValue;
+                ClickDistance = cpeData["ClickDistance"]["Distance"].ShortValue;
             }
+
+            if (cpeData["CustomBlocks"] != null) {
+                CustomBlocksVersion = cpeData["CustomBlocks"]["ExtensionVersion"].IntValue;
+                CustomBlocksLevel = cpeData["CustomBlocks"]["SupportLevel"].ShortValue;
+                CustomBlocksFallback = cpeData["CustomBlocks"]["Fallback"].ByteArrayValue;
+            }
+
+            if (cpeData["EnvColors"] != null) {
+                EnvColorsVersion = cpeData["EnvColors"]["ExtensionVersion"].IntValue;
+                SkyColor = new[] { cpeData["EnvColors"]["Sky"]["R"].ShortValue, cpeData["EnvColors"]["Sky"]["G"].ShortValue, cpeData["EnvColors"]["Sky"]["B"].ShortValue };
+                CloudColor = new[] { cpeData["EnvColors"]["Cloud"]["R"].ShortValue, cpeData["EnvColors"]["Cloud"]["G"].ShortValue, cpeData["EnvColors"]["Cloud"]["B"].ShortValue };
+                FogColor = new[] { cpeData["EnvColors"]["Fog"]["R"].ShortValue, cpeData["EnvColors"]["Fog"]["G"].ShortValue, cpeData["EnvColors"]["Fog"]["B"].ShortValue };
+                AmbientColor = new[] { cpeData["EnvColors"]["Ambient"]["R"].ShortValue, cpeData["EnvColors"]["Ambient"]["G"].ShortValue, cpeData["EnvColors"]["Ambient"]["B"].ShortValue };
+                SunlightColor = new[] { cpeData["EnvColors"]["Sunlight"]["R"].ShortValue, cpeData["EnvColors"]["Sunlight"]["R"].ShortValue, cpeData["EnvColors"]["Sunlight"]["R"].ShortValue };
+            }
+
+            if (cpeData["EnvMapAppearance"] != null) {
+                EnvMapAppearanceVersion = cpeData["EnvMapAppearance"]["ExtensionVersion"].IntValue;
+                TextureUrl = cpeData["EnvMapAppearance"]["TextureURL"].StringValue;
+                SideBlock = cpeData["EnvMapAppearance"]["SideBlock"].ByteValue;
+                EdgeBlock = cpeData["EnvMapAppearance"]["EdgeBlock"].ByteValue;
+                SideLevel = cpeData["EnvMapAppearance"]["SideLevel"].ShortValue;
+            }
+
+            if (cpeData["EnvWeatherType"] != null)
+                Weather = cpeData["EnvWeatherType"]["WeatherType"].ByteValue;
+
+            metadata.Remove(cpeData);
 
             return metadata;
         }
@@ -162,10 +169,13 @@ namespace ClassicWorld.NET
                 baseCPE.Add(envAppearanceTag);
             }
 
-            if (baseCPE.Tags.Any())
-                return baseCPE;
+            var weatherTag = new NbtCompound("EnvWeatherType") {
+                new NbtByte("WeatherType", Weather),
+            };
 
-            return null;
+            baseCPE.Add(weatherTag);
+
+            return baseCPE.Tags.Any() ? baseCPE : null;
         }
     }
 
