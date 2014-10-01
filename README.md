@@ -47,8 +47,10 @@ Any metadata that the library did not reconize will be there as well.
 	CWMap.BlockData[20] = 5;
 	
 	// -- Modify CPE Data
-	CWMap.MetadataParsers["CPE"].TextureURL = "http://google.com/";
-	
+    var cpeMeta = (CPEMetdata)CWMap.MetadataParsers["CPE"];
+	cpeMeta.TextureURL = "http://google.com/";
+	CWMap.MetadataParsers["CPE"] = cpeMeta;
+    
 	CWMap.Save("MyWorld.cw");
 
 That's it! If you wish to know the names of the properties, simply browse the source!
