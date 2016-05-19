@@ -12,13 +12,13 @@ namespace ClassicWorld.NET
     }
 
     public struct ForeignMeta : IMetadataStructure {
-        public NbtTag[] Tags { get; set; }
+        private NbtTag[] Tags { get; set; }
 
         public NbtCompound Read(NbtCompound metadata) {
             Tags = new NbtTag[metadata.Tags.Count()];
             metadata.CopyTo(Tags, 0);
 
-            foreach (var b in Tags) 
+            foreach (NbtTag b in Tags) 
                 metadata.Remove(b);
 
             return metadata;
@@ -30,8 +30,11 @@ namespace ClassicWorld.NET
             if (Tags == null) 
                 return newCompound;
 
-            foreach (var b in Tags) 
+            foreach (NbtTag b in Tags) {
+                ((NbtCompound) b.Parent)?.Remove(b);
+
                 newCompound.Add(b);
+            }
 
             return newCompound;
         }
