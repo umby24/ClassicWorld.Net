@@ -70,31 +70,39 @@ namespace ClassicWorld.NET
                 return metadata;
 
             if (cpeData["ClickDistance"] != null) {
-                ClickDistanceVersion = cpeData["ClickDistance"]["ExtensionVersion"].IntValue;
-                ClickDistance = cpeData["ClickDistance"]["Distance"].ShortValue;
+                if (cpeData["ClickDistance"]["ExtensionVersion"] != null) {
+                    ClickDistanceVersion = cpeData["ClickDistance"]["ExtensionVersion"].IntValue;
+                    ClickDistance = cpeData["ClickDistance"]["Distance"].ShortValue;
+                }
             }
 
             if (cpeData["CustomBlocks"] != null) {
-                CustomBlocksVersion = cpeData["CustomBlocks"]["ExtensionVersion"].IntValue;
-                CustomBlocksLevel = cpeData["CustomBlocks"]["SupportLevel"].ShortValue;
-                CustomBlocksFallback = cpeData["CustomBlocks"]["Fallback"].ByteArrayValue;
+                if (cpeData["CustomBlocks"]["ExtensionVersion"] != null) {
+                    CustomBlocksVersion = cpeData["CustomBlocks"]["ExtensionVersion"].IntValue;
+                    CustomBlocksLevel = cpeData["CustomBlocks"]["SupportLevel"].ShortValue;
+                    CustomBlocksFallback = cpeData["CustomBlocks"]["Fallback"].ByteArrayValue;
+                }
             }
 
             if (cpeData["EnvColors"] != null) {
-                EnvColorsVersion = cpeData["EnvColors"]["ExtensionVersion"].IntValue;
-                SkyColor = new[] { cpeData["EnvColors"]["Sky"]["R"].ShortValue, cpeData["EnvColors"]["Sky"]["G"].ShortValue, cpeData["EnvColors"]["Sky"]["B"].ShortValue };
-                CloudColor = new[] { cpeData["EnvColors"]["Cloud"]["R"].ShortValue, cpeData["EnvColors"]["Cloud"]["G"].ShortValue, cpeData["EnvColors"]["Cloud"]["B"].ShortValue };
-                FogColor = new[] { cpeData["EnvColors"]["Fog"]["R"].ShortValue, cpeData["EnvColors"]["Fog"]["G"].ShortValue, cpeData["EnvColors"]["Fog"]["B"].ShortValue };
-                AmbientColor = new[] { cpeData["EnvColors"]["Ambient"]["R"].ShortValue, cpeData["EnvColors"]["Ambient"]["G"].ShortValue, cpeData["EnvColors"]["Ambient"]["B"].ShortValue };
-                SunlightColor = new[] { cpeData["EnvColors"]["Sunlight"]["R"].ShortValue, cpeData["EnvColors"]["Sunlight"]["R"].ShortValue, cpeData["EnvColors"]["Sunlight"]["R"].ShortValue };
+                if (cpeData["EnvColors"]["ExtensionVersion"] != null) {
+                    EnvColorsVersion = cpeData["EnvColors"]["ExtensionVersion"].IntValue;
+                    SkyColor = new[] { cpeData["EnvColors"]["Sky"]["R"].ShortValue, cpeData["EnvColors"]["Sky"]["G"].ShortValue, cpeData["EnvColors"]["Sky"]["B"].ShortValue };
+                    CloudColor = new[] { cpeData["EnvColors"]["Cloud"]["R"].ShortValue, cpeData["EnvColors"]["Cloud"]["G"].ShortValue, cpeData["EnvColors"]["Cloud"]["B"].ShortValue };
+                    FogColor = new[] { cpeData["EnvColors"]["Fog"]["R"].ShortValue, cpeData["EnvColors"]["Fog"]["G"].ShortValue, cpeData["EnvColors"]["Fog"]["B"].ShortValue };
+                    AmbientColor = new[] { cpeData["EnvColors"]["Ambient"]["R"].ShortValue, cpeData["EnvColors"]["Ambient"]["G"].ShortValue, cpeData["EnvColors"]["Ambient"]["B"].ShortValue };
+                    SunlightColor = new[] { cpeData["EnvColors"]["Sunlight"]["R"].ShortValue, cpeData["EnvColors"]["Sunlight"]["R"].ShortValue, cpeData["EnvColors"]["Sunlight"]["R"].ShortValue };
+                }
             }
 
             if (cpeData["EnvMapAppearance"] != null) {
-                EnvMapAppearanceVersion = cpeData["EnvMapAppearance"]["ExtensionVersion"].IntValue;
-                TextureUrl = cpeData["EnvMapAppearance"]["TextureURL"].StringValue;
-                SideBlock = cpeData["EnvMapAppearance"]["SideBlock"].ByteValue;
-                EdgeBlock = cpeData["EnvMapAppearance"]["EdgeBlock"].ByteValue;
-                SideLevel = cpeData["EnvMapAppearance"]["SideLevel"].ShortValue;
+                if (cpeData["EnvMapAppearance"]["ExtensionVersion"] != null) {
+                    EnvMapAppearanceVersion = cpeData["EnvMapAppearance"]["ExtensionVersion"].IntValue;
+                    TextureUrl = cpeData["EnvMapAppearance"]["TextureURL"].StringValue;
+                    SideBlock = cpeData["EnvMapAppearance"]["SideBlock"].ByteValue;
+                    EdgeBlock = cpeData["EnvMapAppearance"]["EdgeBlock"].ByteValue;
+                    SideLevel = cpeData["EnvMapAppearance"]["SideLevel"].ShortValue;
+                }
             }
 
             if (cpeData["EnvWeatherType"] != null)
@@ -249,8 +257,11 @@ namespace ClassicWorld.NET
                 throw new FormatException("Unsupported format version: " + FormatVersion);
 
             Foreignmeta = new ForeignMeta();
-
-            MapName = _basetag["Name"].StringValue;
+            
+            if (_basetag.Contains("Name"))
+                MapName = _basetag["Name"].StringValue;
+            else
+                MapName = "ClassicWorldMap";
 
             Uuid = _basetag["UUID"].ByteArrayValue;
 
